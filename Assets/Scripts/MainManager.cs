@@ -33,9 +33,6 @@ public class MainManager : MonoBehaviour {
 	void OnGetChipCount(LDChipQueryResult result) {
 		m_BalanceText.text = "" + result.Amount;
 
-		m_BetAmountSlider.minValue = Mathf.Min (1, result.Amount);
-		m_BetAmountSlider.maxValue = result.Amount;
-
 		UpdateSlider (result.Amount);
 		m_BetAmountSlider.onValueChanged.AddListener (BetAmountChanged);
 
@@ -47,10 +44,13 @@ public class MainManager : MonoBehaviour {
 	}
 
 	void UpdateSlider(int amount) {
+		m_BetAmountSlider.minValue = Mathf.Min (1, amount);
+		m_BetAmountSlider.maxValue = amount;
+
 		// Keep bet amount
 		int bet = lastBet;
 		if (lastBet < 0) {
-			bet = amount;
+			bet = (amount + 1) / 2;
 		} else {
 			bet = Mathf.Min (lastBet, amount);
 		}
@@ -59,12 +59,13 @@ public class MainManager : MonoBehaviour {
 	}
 
 	async void Bet() {
+		m_BetBtn.enabled = false;
 		int amount = (int)m_BetAmountSlider.value;
 		bool betBig = m_BetSideDropdown.value == 0;
 
-		await loomWrapper.RollDice (amount, betBig, DiceRolled);
-
 		lastBet = amount;
+
+		await loomWrapper.RollDice (amount, betBig, DiceRolled);
 	}
 
 	void DiceRolled(LDRollQueryResult result) {
@@ -73,6 +74,8 @@ public class MainManager : MonoBehaviour {
 		m_DiceResult.text = (result.Win ? "You Win!" : "You Lose!");
 
 		UpdateSlider (result.Amount);
+
+		m_BetBtn.enabled = true;
 	}
 
 	// Update is called once per frame

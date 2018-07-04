@@ -11,19 +11,19 @@ public class LoginManager : MonoBehaviour {
 
 	// Use this for initialization
 	async void Start () {
-//		if (PlayerPrefs.GetString ("username") != "") {
-//			LoomWrapper loom = LoomWrapper.Instance;
-//
-//			var privateKey = Convert.FromBase64String (PlayerPrefs.GetString ("privkey"));
-//			var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
-//			var contract = await loom.GetContract(privateKey, publicKey);
-//
-//			loom.username = PlayerPrefs.GetString ("username");
-//			loom.contract = contract;
-//
-//			SceneManager.LoadScene ("MainScene");
-//			return;
-//		}
+		if (PlayerPrefs.GetString ("username") != "") {
+			LoomWrapper loom = LoomWrapper.Instance;
+
+			var privateKey = Convert.FromBase64String (PlayerPrefs.GetString ("privkey"));
+			var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
+			var contract = await loom.GetContract(privateKey, publicKey);
+
+			loom.username = PlayerPrefs.GetString ("username");
+			loom.contract = contract;
+
+			SceneManager.LoadScene ("MainScene");
+			return;
+		}
 
 		Button loginBtn = m_LoginBtn.GetComponent<Button> ();
 		loginBtn.onClick.AddListener (LoginClicked);
