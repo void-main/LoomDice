@@ -10,8 +10,17 @@ public class LoginManager : MonoBehaviour {
 	public Button m_LoginBtn;
 
 	// Use this for initialization
-	void Start () {
+	async void Start () {
 //		if (PlayerPrefs.GetString ("username") != "") {
+//			LoomWrapper loom = LoomWrapper.Instance;
+//
+//			var privateKey = Convert.FromBase64String (PlayerPrefs.GetString ("privkey"));
+//			var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
+//			var contract = await loom.GetContract(privateKey, publicKey);
+//
+//			loom.username = PlayerPrefs.GetString ("username");
+//			loom.contract = contract;
+//
 //			SceneManager.LoadScene ("MainScene");
 //			return;
 //		}
@@ -28,9 +37,11 @@ public class LoginManager : MonoBehaviour {
 
 		LoomWrapper loom = LoomWrapper.Instance;
 		var contract = await loom.GetContract(privateKey, publicKey);
-		await loom.CreateAccount (contract, m_UsernameInput.text);
-		await loom.GetChipCount (contract, m_UsernameInput.text);
+		loom.username = m_UsernameInput.text;
+		loom.contract = contract;
+		await loom.CreateAccount ();
 
+		PlayerPrefs.SetString ("privkey", Convert.ToBase64String(privateKey));
 		PlayerPrefs.SetString ("username", m_UsernameInput.text);
 		PlayerPrefs.Save ();
 

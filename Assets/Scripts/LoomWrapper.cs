@@ -15,6 +15,11 @@ public class LoomWrapper
 	{
 	}
 
+	public string username;
+	public Contract contract;
+
+	public delegate void Callback<T> (T result);
+
 	public async Task<Contract> GetContract(byte[] privateKey, byte[] publicKey)
 	{
 		var writer = RPCClientFactory.Configure()
@@ -44,7 +49,7 @@ public class LoomWrapper
 		return new Contract(client, contractAddr, callerAddr);
 	}
 
-	public async Task CreateAccount(Contract contract, string username) {
+	public async Task CreateAccount() {
 		LDCreateAccountTx tx = new LDCreateAccountTx ();
 		tx.Owner = username;
 		try {
@@ -54,22 +59,26 @@ public class LoomWrapper
 		}
 	}
 
-	public async Task GetChipCount(Contract contract, string username)
+	public async Task GetChipCount(Callback<LDChipQueryResult> callback)
 	{
 		LDChipQueryParams cq = new LDChipQueryParams ();
 		cq.Owner = username;
 
 		LDChipQueryResult result  = await contract.StaticCallAsync<LDChipQueryResult>("GetChipCount", cq);
-
-		if (result != null)
-		{
-			// This should print: { "key": "123", "value": "hello!" } in the Unity console window
-			// provided `LoomQuickStartSample.CallContract()` was called first.
-			Debug.Log("Smart contract returned: " + result.Amount);
+		if (callback != null) {
+			callback (result);
 		}
-		else
-		{
-			throw new Exception("Smart contract didn't return anything!");
+	}
+
+	public async Task RollDice(int amount, bool betBig, Callback<LDRollQueryResult> callback) {
+		LDRollQueryParams rq = new LDRollQueryParams ();
+		rq.Owner = username;
+		rq.Amount = amount;
+		rq.BetBig = betBig;
+
+		LDRollQueryResult result = await contract.CallAsync<LDRollQueryResult> ("Roll", rq);
+		if (callback != null) {
+			callback (result);
 		}
 	}
 }
