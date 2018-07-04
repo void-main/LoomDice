@@ -632,7 +632,7 @@ PlayerSettings:
       daydreamIconBackground: {fileID: 0}
   cloudServicesEnabled: {}
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 3
   cloudProjectId: 679d34e4-2b02-4d31-906e-81e00c29de91
   projectName: LoomDice (2)
   organizationId: void-main
